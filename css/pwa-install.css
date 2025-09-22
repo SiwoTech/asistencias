@@ -1,0 +1,248 @@
+/* Install Banner Styles */
+.install-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #e55b26 0%, #ff6d35 100%);
+    color: white;
+    z-index: 1000;
+    transform: translateY(100%);
+    transition: transform 0.3s ease;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.install-banner.show {
+    transform: translateY(0);
+}
+
+.install-content {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    gap: 15px;
+}
+
+.install-icon {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+
+.install-text {
+    flex: 1;
+}
+
+.install-text h4 {
+    margin: 0 0 4px 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.install-text p {
+    margin: 0;
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+
+.install-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-small {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 6px;
+}
+
+.install-header-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.install-header-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.install-header-btn.hidden {
+    display: none;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+}
+
+/* iOS Install Modal */
+.ios-install-content {
+    max-width: 400px;
+    text-align: left;
+}
+
+.ios-instructions {
+    margin: 20px 0;
+}
+
+.instruction-step {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+.step-text p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.step-text strong {
+    color: var(--primary-color);
+}
+
+.step-text i {
+    color: var(--primary-color);
+    margin: 0 4px;
+}
+
+.ios-install-benefits {
+    background: var(--light-color);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-top: 20px;
+}
+
+.ios-install-benefits h4 {
+    margin-bottom: 15px;
+    color: var(--dark-color);
+}
+
+.ios-install-benefits ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.ios-install-benefits li {
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-color);
+}
+
+.ios-install-benefits li i {
+    color: var(--primary-color);
+    width: 16px;
+}
+
+/* PWA Status Indicators */
+.pwa-status {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    z-index: 2000;
+    display: none;
+}
+
+.pwa-status.show {
+    display: block;
+}
+
+.pwa-status.installed {
+    background: var(--success-color);
+}
+
+.pwa-status.installing {
+    background: var(--warning-color);
+}
+
+/* Update Available Banner */
+.update-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--info-color);
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    z-index: 1500;
+    transform: translateY(-100%);
+    transition: transform 0.3s ease;
+}
+
+.update-banner.show {
+    transform: translateY(0);
+}
+
+.update-banner button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.9rem;
+}
+
+.update-banner button:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Responsive adjustments */
+@media (max-width: 360px) {
+    .install-content {
+        padding: 12px 15px;
+        gap: 10px;
+    }
+    
+    .install-text h4 {
+        font-size: 0.9rem;
+    }
+    
+    .install-text p {
+        font-size: 0.8rem;
+    }
+    
+    .btn-small {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+}
+
+/* Animation for install success */
+@keyframes installSuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.install-success {
+    animation: installSuccess 0.6s ease;
+}

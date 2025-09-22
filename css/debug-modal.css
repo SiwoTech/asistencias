@@ -1,0 +1,21 @@
+/* CSS temporal para debugging - quitar después */
+.modal {
+    border: 3px solid red !important;
+}
+
+.modal-content {
+    border: 2px solid blue !important;
+}
+
+#notifications-container {
+    border: 2px solid green !important;
+}
+
+/* Hacer que el modal sea un poco transparente para ver qué hay detrás */
+.modal {
+    background-color: rgba(0,0,0,0.5) !important;
+}
+
+.modal-content {
+    background: white !important;
+}

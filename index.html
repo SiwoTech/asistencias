@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Asistencia y Nómina</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/birthday-styles.css"> <!-- AGREGAR ESTA LÍNEA -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/auto-checkout.css">
+    <link rel="stylesheet" href="css/horarios.css">
+    <link rel="stylesheet" href="css/empleados-extended.css">
+    <link rel="stylesheet" href="css/empleados-detalle.css">
+	<link rel="stylesheet" href="css/zonas-chequeo-styles.css">
+	<script src="js/zonas-chequeo.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-clock"></i>
+                <span>CWO TimeTrack</span>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#dashboard" class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a></li>
+                    <li><a href="#asistencia" class="nav-link" data-section="asistencia">
+                        <i class="fas fa-clock"></i> Asistencia
+                    </a></li>
+                    <li><a href="#empleados" class="nav-link" data-section="empleados">
+                        <i class="fas fa-users"></i> Empleados
+                    </a></li>
+                    <li><a href="#horarios" class="nav-link" data-section="horarios">
+                        <i class="fas fa-calendar-alt"></i> Horarios
+                    </a></li>
+                    <li>
+                      <a href="#zonas-chequeo" class="nav-link" data-section="zonas-chequeo">
+                        <i class="fas fa-map-marker-alt"></i> Zonas
+                      </a>
+                    </li>
+                    <li><a href="#nomina" class="nav-link" data-section="nomina">
+                        <i class="fas fa-money-bill"></i> Nómina
+                    </a></li>
+                    <li><a href="#reportes" class="nav-link" data-section="reportes">
+                        <i class="fas fa-chart-bar"></i> Reportes
+                    </a></li>
+                </ul>
+            </nav>
+            <div class="user-info">
+                <span id="current-time"></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <h1>Dashboard</h1>
+                
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="total-empleados">0</h3>
+                            <p>Empleados Activos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="presentes-hoy">0</h3>
+                            <p>Presentes Hoy</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="faltas-hoy">0</h3>
+                            <p>Faltas Hoy</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="retardos-hoy">0</h3>
+                            <p>Retardos Hoy</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección de Cumpleaños -->
+                <div class="birthday-section">
+                    <div class="birthday-today" id="birthday-today">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                    
+                    <div class="birthday-this-month">
+                        <h3><i class="fas fa-birthday-cake"></i> Cumpleaños de Agosto</h3>
+                        <div class="birthday-list" id="birthday-list">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <h2>Acciones Rápidas</h2>
+                    <div class="action-buttons">
+                        <button class="btn btn-primary" onclick="showSection('asistencia')">
+                            <i class="fas fa-clock"></i>
+                            Registrar Asistencia
+                        </button>
+                        <button class="btn btn-secondary" onclick="generarNominaSemanal()">
+                            <i class="fas fa-calculator"></i>
+                            Generar Nómina
+                        </button>
+                        <button class="btn btn-info" onclick="showSection('reportes')">
+                            <i class="fas fa-file-alt"></i>
+                            Ver Reportes
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="recent-activity">
+                    <h2>Actividad Reciente</h2>
+                    <div id="activity-list" class="activity-list">
+                        <!-- Se llena dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Asistencia Section -->
+        <section id="asistencia" class="section">
+            <div class="container">
+                <h1>Registro de Asistencia</h1>
+                
+                <!-- Marcado de Asistencia -->
+                <div class="attendance-clock">
+                    <div class="clock-display">
+                        <div class="current-time" id="clock-time"></div>
+                        <div class="current-date" id="clock-date"></div>
+                    </div>
+                    
+                    <div class="employee-selector">
+                        <label for="empleado-select">Seleccionar Empleado:</label>
+                        <select id="empleado-select" class="form-control">
+                            <option value="">Seleccione un empleado...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="punch-buttons">
+                        <button id="btn-entrada" class="punch-btn entrada">
+                            <i class="fas fa-sign-in-alt"></i>
+                            ENTRADA
+                        </button>
+                        <button id="btn-salida" class="punch-btn salida">
+                            <i class="fas fa-sign-out-alt"></i>
+                            SALIDA
+                        </button>
+                    </div>
+                    
+                    <div id="punch-status" class="punch-status"></div>
+                </div>
+
+                <!-- Asistencia del Día -->
+                <div class="today-attendance">
+                    <h2>Asistencia de Hoy</h2>
+                    <div class="table-responsive">
+                        <table id="tabla-asistencia-hoy" class="table">
+                            <thead>
+                                <tr>
+                                    <th>Empleado</th>
+                                    <th>Entrada</th>
+                                    <th>Salida</th>
+                                    <th>Estado</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Empleados Section -->
+        <section id="empleados" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-users"></i> Gestión de Empleados</h1>
+                    <button class="btn btn-primary" onclick="mostrarModalEmpleado()">
+                        <i class="fas fa-plus"></i> Nuevo Empleado
+                    </button>
+                </div>
+                
+                <!-- Filtros de empleados -->
+                <div class="filters-section">
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label for="empleado-search">Buscar empleado:</label>
+                            <input type="text" id="empleado-search" class="form-control" placeholder="Nombre, apellido o número...">
+                        </div>
+                        <div class="filter-group">
+                            <label for="empleado-departamento-filter">Departamento:</label>
+                            <select id="empleado-departamento-filter" class="form-control">
+                                <option value="">Todos los departamentos</option>
+                                <option value="administracion">Administración</option>
+                                <option value="ventas">Ventas</option>
+                                <option value="sistemas">Sistemas</option>
+                                <option value="recursos_humanos">Recursos Humanos</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="empleado-estado-filter">Estado:</label>
+                            <select id="empleado-estado-filter" class="form-control">
+                                <option value="">Todos</option>
+                                <option value="1">Activos</option>
+                                <option value="0">Inactivos</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <button class="btn btn-secondary" onclick="empleadosModule.limpiarFiltros()">
+                                <i class="fas fa-times"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Estadísticas rápidas -->
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <div class="stat-icon empleados">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-empleados-stats">0</h3>
+                            <p>Total Empleados</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon activos">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="empleados-activos-stats">0</h3>
+                            <p>Empleados Activos</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon nuevos">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="empleados-nuevos-stats">0</h3>
+                            <p>Nuevos Este Mes</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon departamentos">
+                            <i class="fas fa-building"></i>
+                        </div>
+                        <div class="stat-content">
+                            <h3 id="total-departamentos-stats">0</h3>
+                            <p>Departamentos</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tabla de empleados -->
+                <div class="table-container">
+                    <div class="table-header">
+                        <h2><i class="fas fa-table"></i> Lista de Empleados</h2>
+                        <div class="table-actions">
+                            <button class="btn btn-success" onclick="empleadosModule.exportarEmpleados()">
+                                <i class="fas fa-file-excel"></i> Exportar Excel
+                            </button>
+                            <button class="btn btn-info" onclick="empleadosModule.imprimirLista()">
+                                <i class="fas fa-print"></i> Imprimir Lista
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive">
+                        <table id="tabla-empleados" class="table">
+                            <thead>
+                                <tr>
+                                    <th onclick="empleadosModule.ordenarPor('numero_empleado')" class="sortable">
+                                        <i class="fas fa-sort"></i> No. Empleado
+                                    </th>
+                                    <th onclick="empleadosModule.ordenarPor('nombre')" class="sortable">
+                                        <i class="fas fa-sort"></i> Nombre Completo
+                                    </th>
+                                    <th onclick="empleadosModule.ordenarPor('puesto')" class="sortable">
+                                        <i class="fas fa-sort"></i> Puesto
+                                    </th>
+                                    <th onclick="empleadosModule.ordenarPor('departamento')" class="sortable">
+                                        <i class="fas fa-sort"></i> Departamento
+                                    </th>
+                                    <th onclick="empleadosModule.ordenarPor('salario_semanal')" class="sortable">
+                                        <i class="fas fa-sort"></i> Salario Diario
+                                    </th>
+                                    <th onclick="empleadosModule.ordenarPor('fecha_ingreso')" class="sortable">
+                                        <i class="fas fa-sort"></i> Fecha Ingreso
+                                    </th>
+                                    <th onclick="empleadosModule.ordenarPor('activo')" class="sortable">
+                                        <i class="fas fa-sort"></i> Estado
+                                    </th>
+                                    <th class="actions-column">
+                                        <i class="fas fa-cogs"></i> Acciones
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Los datos se cargan aquí dinámicamente -->
+                                <tr>
+                                    <td colspan="8" class="text-center">
+                                        <div class="loading-message">
+                                            <i class="fas fa-spinner fa-spin"></i>
+                                            Cargando empleados...
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Paginación -->
+                    <div class="pagination-container">
+                        <div class="pagination-info">
+                            <span id="empleados-pagination-info">Mostrando 0 de 0 empleados</span>
+                        </div>
+                        <div class="pagination-controls">
+                            <button class="btn btn-sm btn-secondary" id="empleados-prev-page" disabled>
+                                <i class="fas fa-chevron-left"></i> Anterior
+                            </button>
+                            <span id="empleados-page-numbers"></span>
+                            <button class="btn btn-sm btn-secondary" id="empleados-next-page" disabled>
+                                Siguiente <i class="fas fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        
+       <div id="modal-empleado" class="modal">
+            <div class="modal-content empleado-modal-extended">
+                <span class="close" onclick="cerrarModalEmpleado()">&times;</span>
+                <h2 id="modal-empleado-title">Nuevo Empleado</h2>
+                
+                <!-- Tabs para organizar la información -->
+                <div class="empleado-tabs">
+                    <button type="button" class="tab-btn active" onclick="empleadosModule.showTab('basicos')">
+                        <i class="fas fa-user"></i> Datos Básicos
+                    </button>
+                    <button type="button" class="tab-btn" onclick="empleadosModule.showTab('personales')">
+                        <i class="fas fa-id-card"></i> Datos Personales
+                    </button>
+                    <button type="button" class="tab-btn" onclick="empleadosModule.showTab('laborales')">
+                        <i class="fas fa-briefcase"></i> Datos Laborales
+                    </button>
+                    <button type="button" class="tab-btn" onclick="empleadosModule.showTab('bancarios')">
+                        <i class="fas fa-university"></i> Datos Bancarios
+                    </button>
+                    <button type="button" class="tab-btn" onclick="empleadosModule.showTab('emergencia')">
+                        <i class="fas fa-phone"></i> Contacto Emergencia
+                    </button>
+                </div>
+                
+                <form id="form-empleado">
+                    <!-- TAB: Datos Básicos -->
+                    <div id="tab-basicos" class="tab-content active">
+                        <h3><i class="fas fa-user"></i> Información Básica</h3>
+                        
+                        <div class="form-group">
+                            <label>Número de Empleado: <span class="required">*</span></label>
+                            <input type="text" id="numero_empleado" name="numero_empleado" class="form-control" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Nombre: <span class="required">*</span></label>
+                                <input type="text" id="nombre" name="nombre" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Apellidos: <span class="required">*</span></label>
+                                <input type="text" id="apellidos" name="apellidos" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Email:</label>
+                                <input type="email" id="email" name="email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Teléfono:</label>
+                                <input type="tel" id="telefono" name="telefono" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fecha de Nacimiento:</label>
+                                <input type="date" id="fecha_nacimiento" name="fecha_nacimiento" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Sexo:</label>
+                                <select id="sexo" name="sexo" class="form-control">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="masculino">Masculino</option>
+                                    <option value="femenino">Femenino</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- TAB: Datos Personales -->
+                    <div id="tab-personales" class="tab-content">
+                        <h3><i class="fas fa-id-card"></i> Información Personal</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Estado Civil:</label>
+                                <select id="estado_civil" name="estado_civil" class="form-control">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="soltero">Soltero(a)</option>
+                                    <option value="casado">Casado(a)</option>
+                                    <option value="divorciado">Divorciado(a)</option>
+                                    <option value="viudo">Viudo(a)</option>
+                                    <option value="union_libre">Unión Libre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Nacionalidad:</label>
+                                <input type="text" id="nacionalidad" name="nacionalidad" class="form-control" value="Mexicana">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Lugar de Nacimiento:</label>
+                            <input type="text" id="lugar_nacimiento" name="lugar_nacimiento" class="form-control" placeholder="Ciudad, Estado">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>RFC con Homoclave:</label>
+                                <input type="text" id="rfc" name="rfc" class="form-control" placeholder="AAAA000000AAA" maxlength="13" style="text-transform: uppercase;">
+                            </div>
+                            <div class="form-group">
+                                <label>CURP:</label>
+                                <input type="text" id="curp" name="curp" class="form-control" placeholder="AAAA000000HAAAAA00" maxlength="18" style="text-transform: uppercase;">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Número de Seguro Social:</label>
+                            <input type="text" id="numero_seguro_social" name="numero_seguro_social" class="form-control" placeholder="00000000000">
+                        </div>
+                        
+                        <h4><i class="fas fa-home"></i> Domicilio</h4>
+                        <div class="form-group">
+                            <label>Dirección Completa:</label>
+                            <textarea id="domicilio" name="domicilio" class="form-control" rows="3" placeholder="Calle, número, colonia..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Población/Ciudad:</label>
+                                <input type="text" id="poblacion" name="poblacion" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Estado:</label>
+                                <input type="text" id="estado" name="estado" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Código Postal:</label>
+                                <input type="text" id="codigo_postal" name="codigo_postal" class="form-control" maxlength="5">
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-medkit"></i> Información Médica</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tipo de Sangre:</label>
+                                <select id="tipo_sangre" name="tipo_sangre" class="form-control">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Alergias:</label>
+                            <textarea id="alergias" name="alergias" class="form-control" rows="2" placeholder="Especificar alergias conocidas..."></textarea>
+                        </div>
+                    </div>
+        
+                    <!-- TAB: Datos Laborales -->
+                    <div id="tab-laborales" class="tab-content">
+                        <h3><i class="fas fa-briefcase"></i> Información Laboral</h3>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Puesto: <span class="required">*</span></label>
+                                <input type="text" id="puesto" name="puesto" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Departamento:</label>
+                                <input type="text" id="departamento" name="departamento" class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Actividades a Desempeñar:</label>
+                            <textarea id="actividades_desempenar" name="actividades_desempenar" class="form-control" rows="3" placeholder="Describir las principales actividades y responsabilidades..."></textarea>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Salario Semanal: <span class="required">*</span></label>
+                                <input type="number" id="salario_semanal" name="salario_semanal" class="form-control" step="0.01" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Centro de Trabajo:</label>
+                                <input type="text" id="centro_trabajo" name="centro_trabajo" required>
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-file-contract"></i> Información del Contrato</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Tipo de Contrato:</label>
+                                <select id="tipo_contrato" name="tipo_contrato" class="form-control">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="indefinido">Indefinido</option>
+                                    <option value="temporal">Temporal</option>
+                                    <option value="por_obra">Por Obra Determinada</option>
+                                    <option value="capacitacion">Capacitación Inicial</option>
+                                    <option value="eventual">Eventual</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Duración del Contrato:</label>
+                                <input type="text" id="duracion_contrato" name="duracion_contrato" class="form-control" placeholder="Ej: 1 año, indefinido, 6 meses">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Fecha de Firma del Contrato:</label>
+                                <input type="date" id="fecha_firma_contrato" name="fecha_firma_contrato" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Fecha de Ingreso: <span class="required">*</span></label>
+                                <input type="date" id="fecha_ingreso" name="fecha_ingreso" class="form-control" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Día(s) de Descanso:</label>
+                                <input type="text" id="dias_descanso" name="dias_descanso" class="form-control" placeholder="Ej: Domingo, Sábado y Domingo">
+                            </div>
+                            <div class="form-group">
+                                <label>Vacaciones Pendientes (días):</label>
+                                <input type="number" id="vacaciones_pendientes" name="vacaciones_pendientes" class="form-control" min="0" value="0">
+                            </div>
+                        </div>
+                        
+                        <h4><i class="fas fa-home"></i> Crédito Infonavit</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Número de Crédito Infonavit:</label>
+                                <input type="text" id="credito_infonavit" name="credito_infonavit" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Tipo de Retención:</label>
+                                <select id="tipo_retencion" name="tipo_retencion" class="form-control">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="vsm">VSM (Veces Salario Mínimo)</option>
+                                    <option value="cuota_fija">Cuota Fija</option>
+                                    <option value="porcentaje">Porcentaje</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Valor de Retención:</label>
+                                <input type="number" id="valor_retencion" name="valor_retencion" class="form-control" step="0.01" placeholder="Monto o porcentaje">
+                            </div>
+                        </div>
+                    </div>
+        
+                    <!-- TAB: Datos Bancarios -->
+                    <div id="tab-bancarios" class="tab-content">
+                        <h3><i class="fas fa-university"></i> Información Bancaria</h3>
+                        
+                        <div class="form-group">
+                            <label>Banco:</label>
+                            <input type="text" id="banco" name="banco" class="form-control" placeholder="Nombre del banco">
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Número de Cuenta:</label>
+                                <input type="text" id="numero_cuenta" name="numero_cuenta" class="form-control" placeholder="Número de cuenta bancaria">
+                            </div>
+                            <div class="form-group">
+                                <label>CLABE Interbancaria:</label>
+                                <input type="text" id="clabe_interbancaria" name="clabe_interbancaria" class="form-control" placeholder="18 dígitos" maxlength="18">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Observaciones Bancarias:</label>
+                            <textarea id="observaciones_personales" name="observaciones_personales" class="form-control" rows="3" placeholder="Notas adicionales sobre información bancaria..."></textarea>
+                        </div>
+                    </div>
+        
+                    <!-- TAB: Contacto de Emergencia -->
+                    <div id="tab-emergencia" class="tab-content">
+                        <h3><i class="fas fa-phone"></i> Contacto de Emergencia</h3>
+                        
+                        <div class="form-group">
+                            <label>Nombre del Contacto de Emergencia:</label>
+                            <input type="text" id="contacto_emergencia" name="contacto_emergencia" class="form-control" placeholder="Nombre completo">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Teléfono de Emergencia:</label>
+                            <input type="tel" id="telefono_emergencia" name="telefono_emergencia" class="form-control" placeholder="Número de teléfono">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Relación/Parentesco:</label>
+                            <input type="text" id="parentesco_emergencia" name="parentesco_emergencia" class="form-control" placeholder="Ej: Esposo(a), Padre, Madre, Hermano(a)">
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Empleado
+                        </button>
+                        <button type="button" class="btn btn-secondary" onclick="cerrarModalEmpleado()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                    </div>
+                    
+                    <input type="hidden" id="empleado_id" name="empleado_id">
+                </form>
+            </div>
+        </div>
+        
+        <!-- Zonas de Chequeo Section - Agrega esto donde lo veas conveniente en el panel admin -->
+        <div id="modal-zona-chequeo" class="modal">
+			<div class="modal-content">
+				<span class="close" onclick="cerrarModalZona()">&times;</span>
+				<h2 id="modal-zona-title"><i class="fas fa-map-marker-alt"></i> Nueva Zona de Chequeo</h2>
+				<form id="form-zona-chequeo">
+					<!-- Información básica de la zona -->
+					<div class="form-section">
+						<h3><i class="fas fa-info-circle"></i> Información de la Zona</h3>
+						
+						<div class="form-group">
+							<label for="zona-nombre">
+								<i class="fas fa-tag"></i> Nombre de la Zona: <span class="required">*</span>
+							</label>
+							<input type="text" name="nombre" id="zona-nombre" class="form-control" 
+								   placeholder="Ej: Oficina Principal, Sucursal Norte..." required>
+						</div>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label for="zona-latitud">
+									<i class="fas fa-map-pin"></i> Latitud: <span class="required">*</span>
+								</label>
+								<input type="number" step="any" name="latitud" id="zona-latitud" 
+									   class="form-control" placeholder="19.432608" required>
+							</div>
+							<div class="form-group">
+								<label for="zona-longitud">
+									<i class="fas fa-map-pin"></i> Longitud: <span class="required">*</span>
+								</label>
+								<input type="number" id="zona-longitud" name="longitud" class="form-control" step="0.000001" min="-180" max="180" placeholder="-99.133209" required>
+							</div>
+							<div class="form-group">
+								<label for="zona-radio">
+									<i class="fas fa-circle"></i> Radio (metros): <span class="required">*</span>
+								</label>
+								<input type="number" name="radio" id="zona-radio" 
+									   class="form-control" value="100" min="1" 
+									   placeholder="100" required>
+							</div>
+						</div>
+					</div>
+
+					<!-- Asignación de empleado y centro de trabajo -->
+					<div class="form-section">
+						<h3><i class="fas fa-user-tie"></i> Asignación de Empleado</h3>
+						
+						<div class="form-row">
+							<div class="form-group">
+								<label for="zona-empleado">
+									<i class="fas fa-user"></i> Empleado Asignado:
+								</label>
+								<select name="empleado_id" id="zona-empleado" class="form-control">
+									<option value="">Sin asignar</option>
+									<!-- Opciones llenadas dinámicamente -->
+								</select>
+								 <input type="text" id="zona-empleado-nombre" class="form-control" readonly style="display:none;">
+								<small class="form-text text-muted">
+									<i class="fas fa-info-circle"></i> 
+									Selecciona un empleado para asignar esta zona específicamente
+								</small>
+							</div>
+							
+							<div class="form-group">
+								<label for="zona-centro" class="centro-trabajo-label">
+									<i class="fas fa-building"></i> Centro de Trabajo:
+								</label>
+								<input type="text" id="zona-centro" name="centro_trabajo" class="form-control centro-trabajo-field" readonly>
+								
+							</div>
+							
+							<div class="form-group">
+								<label for="zona-activo">
+									<i class="fas fa-toggle-on"></i> Estado:
+								</label>
+								<select name="activo" id="zona-activo" class="form-control">
+									<option value="1">Activo</option>
+									<option value="0">Inactivo</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					
+					<div class="form-actions">
+						<button type="submit" class="btn btn-primary">
+							<i class="fas fa-save"></i> Guardar Zona
+						</button>
+						<button type="button" class="btn btn-secondary" onclick="cerrarModalZona()">
+							<i class="fas fa-times"></i> Cancelar
+						</button>
+					</div>
+					<input type="hidden" name="id" id="zona-id">
+				</form>
+			</div>
+		</div>
+        
+		<section id="zonas-chequeo" class="section">
+			<div class="container">
+				<div class="section-header">
+					<h1><i class="fas fa-map-marker-alt"></i> Zonas de Chequeo</h1>
+					<button class="btn btn-primary" onclick="mostrarModalZona()">Nueva Zona</button>
+				</div>
+				<div class="table-responsive">
+					<table id="tabla-zonas-chequeo" class="table">
+						<thead>
+							<tr>
+								<th>Nombre</th>
+								<th>Latitud</th>
+								<th>Longitud</th>
+								<th>Radio (m)</th>
+								<th>Empleado</th>
+								<th>Centro de Trabajo</th>
+								<th>Activo</th>
+								<th>Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- Se llena dinámicamente -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</section>
+        
+        <section id="horarios" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-clock"></i> Gestión de Horarios</h1>
+                    <button class="btn btn-primary" onclick="mostrarModalHorario()">
+                        <i class="fas fa-plus"></i> Asignar Horario
+                    </button>
+                </div>
+                
+                <!-- Filtros de horarios -->
+                <div class="filters-section">
+                    <div class="filters-row">
+                        <div class="filter-group">
+                            <label for="horario-empleado-filter">Empleado:</label>
+                            <select id="horario-empleado-filter" class="form-control">
+                                <option value="">Todos los empleados</option>
+                                <!-- Se llenan dinámicamente -->
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="horario-dia-filter">Día:</label>
+                            <select id="horario-dia-filter" class="form-control">
+                                <option value="">Todos los días</option>
+                                <option value="lunes">Lunes</option>
+                                <option value="martes">Martes</option>
+                                <option value="miercoles">Miércoles</option>
+                                <option value="jueves">Jueves</option>
+                                <option value="viernes">Viernes</option>
+                                <option value="sabado">Sábado</option>
+                                <option value="domingo">Domingo</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <button class="btn btn-secondary" onclick="horariosModule.aplicarFiltros()">
+                                <i class="fas fa-search"></i> Filtrar
+                            </button>
+                            <button class="btn btn-secondary" onclick="horariosModule.limpiarFiltros()">
+                                <i class="fas fa-times"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        
+                <!-- Vista por empleado -->
+                <div class="horarios-container">
+                    <div class="view-selector">
+                        <button class="btn btn-outline-primary active" onclick="horariosModule.cambiarVista('empleado')" id="vista-empleado">
+                            <i class="fas fa-user"></i> Por Empleado
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="horariosModule.cambiarVista('dia')" id="vista-dia">
+                            <i class="fas fa-calendar-day"></i> Por Día
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="horariosModule.cambiarVista('semanal')" id="vista-semanal">
+                            <i class="fas fa-calendar-week"></i> Vista Semanal
+                        </button>
+                    </div>
+        
+                    <!-- Vista por empleado -->
+                      <div id="horarios-empleado-view" class="horarios-content active">
+						<div id="horarios-empleado-list">
+							<!-- Aquí se cargan los horarios -->
+							<div class="loading-spinner">
+								🔄 Cargando horarios...
+							</div>
+						</div>
+					</div>
+        
+                    <!-- Vista por día -->
+                    <div id="horarios-por-dia" class="horarios-view">
+                        <div class="table-responsive">
+                            <table id="tabla-horarios-dia" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Empleado</th>
+                                        <th>Lunes</th>
+                                        <th>Martes</th>
+                                        <th>Miércoles</th>
+                                        <th>Jueves</th>
+                                        <th>Viernes</th>
+                                        <th>Sábado</th>
+                                        <th>Domingo</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Se llena dinámicamente -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+        
+                    <!-- Vista semanal -->
+                    <div id="horarios-semanal" class="horarios-view">
+                        <div class="calendar-view">
+                            <div class="calendar-header">
+                                <h3>Vista Semanal de Horarios</h3>
+                            </div>
+                            <div id="calendario-horarios">
+                                <!-- Se llena dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Modal para Horarios -->
+        <div id="modal-horario" class="modal">
+            <div class="modal-content modal-horario">
+                <span class="close" onclick="cerrarModalHorario()">&times;</span>
+                <h2 id="modal-horario-title">Asignar Horario</h2>
+                
+                <form id="form-horario">
+                    <input type="hidden" id="horario_empleado_id" name="empleado_id">
+                    
+                    <div class="form-group">
+                        <label for="horario_empleado_select">Empleado *</label>
+                        <select id="horario_empleado_select" name="empleado_id" class="form-control" required>
+                            <option value="">Seleccionar empleado...</option>
+                            <!-- Se llenan dinámicamente -->
+                        </select>
+                    </div>
+                    
+                    <div class="horarios-dias">
+                        <h3><i class="fas fa-calendar-week"></i> Horarios por Día</h3>
+                        
+                        <!-- Lunes -->
+                        <div class="dia-horario">
+                            <div class="dia-header">
+                                <label class="dia-check">
+                                    <input type="checkbox" id="lunes_activo" name="lunes_activo">
+                                    <span class="dia-nombre">Lunes</span>
+                                </label>
+                            </div>
+                            <div class="dia-horas">
+                                <div class="form-group">
+                                    <label for="lunes_entrada">Entrada</label>
+                                    <input type="time" id="lunes_entrada" name="lunes_entrada" class="form-control" value="09:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="lunes_salida">Salida</label>
+                                    <input type="time" id="lunes_salida" name="lunes_salida" class="form-control" value="18:00">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Martes -->
+                        <div class="dia-horario">
+                            <div class="dia-header">
+                                <label class="dia-check">
+                                    <input type="checkbox" id="martes_activo" name="martes_activo">
+                                    <span class="dia-nombre">Martes</span>
+                                </label>
+                            </div>
+                            <div class="dia-horas">
+                                <div class="form-group">
+                                    <label for="martes_entrada">Entrada</label>
+                                    <input type="time" id="martes_entrada" name="martes_entrada" class="form-control" value="09:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="martes_salida">Salida</label>
+                                    <input type="time" id="martes_salida" name="martes_salida" class="form-control" value="18:00">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Miércoles -->
+                        <div class="dia-horario">
+                            <div class="dia-header">
+                                <label class="dia-check">
+                                    <input type="checkbox" id="miercoles_activo" name="miercoles_activo">
+                                    <span class="dia-nombre">Miércoles</span>
+                                </label>
+                            </div>
+                            <div class="dia-horas">
+                                <div class="form-group">
+                                    <label for="miercoles_entrada">Entrada</label>
+                                    <input type="time" id="miercoles_entrada" name="miercoles_entrada" class="form-control" value="09:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="miercoles_salida">Salida</label>
+                                    <input type="time" id="miercoles_salida" name="miercoles_salida" class="form-control" value="18:00">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Jueves -->
+                        <div class="dia-horario">
+                            <div class="dia-header">
+                                <label class="dia-check">
+                                    <input type="checkbox" id="jueves_activo" name="jueves_activo">
+                                    <span class="dia-nombre">Jueves</span>
+                                </label>
+                            </div>
+                            <div class="dia-horas">
+                                <div class="form-group">
+                                    <label for="jueves_entrada">Entrada</label>
+                                    <input type="time" id="jueves_entrada" name="jueves_entrada" class="form-control" value="09:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="jueves_salida">Salida</label>
+                                    <input type="time" id="jueves_salida" name="jueves_salida" class="form-control" value="18:00">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Viernes -->
+                        <div class="dia-horario">
+                            <div class="dia-header">
+                                <label class="dia-check">
+                                    <input type="checkbox" id="viernes_activo" name="viernes_activo">
+                                    <span class="dia-nombre">Viernes</span>
+                                </label>
+                            </div>
+                            <div class="dia-horas">
+                                <div class="form-group">
+                                    <label for="viernes_entrada">Entrada</label>
+                                    <input type="time" id="viernes_entrada" name="viernes_entrada" class="form-control" value="09:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="viernes_salida">Salida</label>
+                                    <input type="time" id="viernes_salida" name="viernes_salida" class="form-control" value="18:00">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Sábado -->
+                        <div class="dia-horario">
+                            <div class="dia-header">
+                                <label class="dia-check">
+                                    <input type="checkbox" id="sabado_activo" name="sabado_activo">
+                                    <span class="dia-nombre">Sábado</span>
+                                </label>
+                            </div>
+                            <div class="dia-horas">
+                                <div class="form-group">
+                                    <label for="sabado_entrada">Entrada</label>
+                                    <input type="time" id="sabado_entrada" name="sabado_entrada" class="form-control" value="09:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="sabado_salida">Salida</label>
+                                    <input type="time" id="sabado_salida" name="sabado_salida" class="form-control" value="14:00">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Domingo -->
+                        <div class="dia-horario">
+                            <div class="dia-header">
+                                <label class="dia-check">
+                                    <input type="checkbox" id="domingo_activo" name="domingo_activo">
+                                    <span class="dia-nombre">Domingo</span>
+                                </label>
+                            </div>
+                            <div class="dia-horas">
+                                <div class="form-group">
+                                    <label for="domingo_entrada">Entrada</label>
+                                    <input type="time" id="domingo_entrada" name="domingo_entrada" class="form-control" value="10:00">
+                                </div>
+                                <div class="form-group">
+                                    <label for="domingo_salida">Salida</label>
+                                    <input type="time" id="domingo_salida" name="domingo_salida" class="form-control" value="14:00">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="cerrarModalHorario()">
+                            <i class="fas fa-times"></i> Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Guardar Horarios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Nómina Section -->
+        <section id="nomina" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Gestión de Nómina</h1>
+                    <div class="nomina-controls">
+                        <select id="periodo-select" class="form-control">
+                            <option value="">Seleccionar período...</option>
+                        </select>
+                        <button class="btn btn-primary" onclick="generarNominaPeriodo()">
+                            <i class="fas fa-calculator"></i> Generar Nómina
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="nomina-summary" id="nomina-summary">
+                    <!-- Resumen de nómina -->
+                </div>
+                
+                <div class="table-responsive">
+                    <table id="tabla-nomina" class="table">
+                        <thead>
+                            <tr>
+                                <th>Empleado</th>
+                                <th>Salario Base</th>
+                                <th>Días Trabajados</th>
+                                <th>Faltas</th>
+                                <th>Descuentos</th>
+                                <th>Comisiones</th>
+                                <th>Total</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reportes Section -->
+        <section id="reportes" class="section">
+            <div class="container">
+                <h1>Reportes</h1>
+                
+                <div class="reports-grid">
+                    <div class="report-card">
+                        <h3>Reporte de Asistencia</h3>
+                        <p>Generar reporte detallado de asistencia por período</p>
+                        <button class="btn btn-primary" onclick="generarReporteAsistencia()">
+                            <i class="fas fa-file-alt"></i> Generar
+                        </button>
+                    </div>
+                    
+                    <div class="report-card">
+                        <h3>Reporte de Nómina</h3>
+                        <p>Reporte completo de nómina por período</p>
+                        <button class="btn btn-primary" onclick="generarReporteNomina()">
+                            <i class="fas fa-money-bill"></i> Generar
+                        </button>
+                    </div>
+                    
+                    <div class="report-card">
+                        <h3>Reporte de Faltas</h3>
+                        <p>Análisis de faltas y retardos del personal</p>
+                        <button class="btn btn-primary" onclick="generarReporteFaltas()">
+                            <i class="fas fa-exclamation-triangle"></i> Generar
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Filtros de Reportes -->
+                <div class="report-filters">
+                    <h2>Filtros de Reportes</h2>
+                    <div class="filter-group">
+                        <label>Fecha Inicio:</label>
+                        <input type="date" id="fecha-inicio" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label>Fecha Fin:</label>
+                        <input type="date" id="fecha-fin" class="form-control">
+                    </div>
+                    <div class="filter-group">
+                        <label>Empleado:</label>
+                        <select id="empleado-reporte" class="form-control">
+                            <option value="">Todos los empleados</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Área de Resultados -->
+                <div id="report-results" class="report-results">
+                    <!-- Resultados de reportes -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal para Empleados -->
+    <div id="modal-empleado" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModalEmpleado()">&times;</span>
+            <h2 id="modal-empleado-title">Nuevo Empleado</h2>
+            <form id="form-empleado">
+                <div class="form-group">
+                    <label>Número de Empleado:</label>
+                    <input type="text" id="numero_empleado" name="numero_empleado" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre:</label>
+                        <input type="text" id="nombre" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellidos:</label>
+                        <input type="text" id="apellidos" name="apellidos" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="email" name="email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono:</label>
+                        <input type="tel" id="telefono" name="telefono" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Puesto:</label>
+                        <input type="text" id="puesto" name="puesto" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Departamento:</label>
+                        <input type="text" id="departamento" name="departamento" class="form-control">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Salario Semanal:</label>
+                        <input type="number" id="salario_semanal" name="salario_semanal" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Ingreso:</label>
+                        <input type="date" id="fecha_ingreso" name="fecha_ingreso" class="form-control" required>
+                    </div>
+                </div>
+                <!-- AGREGAR ESTE CAMPO NUEVO -->
+                <div class="form-group">
+                    <label for="fecha_nacimiento">
+                        <i class="fas fa-birthday-cake"></i>
+                        Fecha de Nacimiento
+                    </label>
+                    <input type="date" 
+                           id="fecha_nacimiento" 
+                           name="fecha_nacimiento" 
+                           class="form-control"
+                           placeholder="Selecciona la fecha de nacimiento">
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModalEmpleado()">Cancelar</button>
+                </div>
+                <input type="hidden" id="empleado_id" name="empleado_id">
+            </form>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loading" class="loading hidden">
+        <div class="spinner"></div>
+        <p>Cargando...</p>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="js/main.js"></script>    
+    <script src="js/empleados.js"></script>
+	<script src="js/horarios.js"></script>
+	<script src="js/asistencia.js"></script>
+    <script src="js/nomina.js"></script>
+    <script src="js/reportes.js"></script>
+    <script src="js/birthday-manager.js"></script> 
+    <script src="js/auto-checkout.js"></script>    
+    <script src="js/debug_modules.js"></script>
+<script src="js/fix-estadisticas-especifico.js"></script>
+<script src="js/horarios-fix.js"></script>
+<script src="js/debug-horarios.js"></script>
+<link rel="stylesheet" href="css/modal-notifications-fix.css">
+<script src="js/notification-system-fix.js"></script>
+<script src="js/empleados-notification-update.js"></script>
+<script src="js/debug-error-400.js"></script>
+
+<link rel="stylesheet" href="css/mobile-control.css">    
+</body>
+</html>

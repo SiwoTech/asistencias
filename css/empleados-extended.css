@@ -1,0 +1,317 @@
+/* Modal Extendido de Empleados */
+.empleado-modal-extended {
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 95%;
+    margin: 2% auto;
+}
+
+.empleado-tabs {
+    display: flex;
+    margin-bottom: 25px;
+    border-bottom: 2px solid var(--border-color);
+    overflow-x: auto;
+    gap: 5px;
+}
+
+.empleado-tabs .tab-btn {
+    padding: 12px 20px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    font-weight: 500;
+    color: var(--secondary-color);
+    border-radius: 8px 8px 0 0;
+}
+
+.empleado-tabs .tab-btn:hover {
+    background: rgba(229, 91, 38, 0.1);
+    color: var(--primary-color);
+}
+
+.empleado-tabs .tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-bottom-color: var(--primary-color);
+}
+
+.empleado-tabs .tab-btn i {
+    margin-right: 8px;
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content h3 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+}
+
+.tab-content h4 {
+    color: var(--dark-color);
+    margin: 25px 0 15px 0;
+    padding-left: 15px;
+    border-left: 4px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dark-color);
+    font-size: 0.9rem;
+}
+
+.required {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(229, 91, 38, 0.1);
+}
+
+.form-control:invalid {
+    border-color: var(--danger-color);
+}
+
+.form-control:invalid:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+textarea.form-control {
+    resize: vertical;
+    min-height: 80px;
+}
+
+select.form-control {
+    background-image: url("data:image/svg+xml;charset=UTF-8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'><polyline points='6,9 12,15 18,9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+    appearance: none;
+    padding-right: 40px;
+}
+
+.form-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid var(--border-color);
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+}
+
+.form-actions .btn {
+    padding: 12px 25px;
+    font-weight: 600;
+    min-width: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+/* Estados específicos para campos */
+.form-group.error .form-control {
+    border-color: var(--danger-color);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.form-group.success .form-control {
+    border-color: var(--success-color);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.field-hint {
+    font-size: 0.8rem;
+    color: var(--secondary-color);
+    margin-top: 5px;
+    font-style: italic;
+}
+
+/* Validación visual */
+.form-control[data-validate="rfc"]:valid,
+.form-control[data-validate="curp"]:valid {
+    border-color: var(--success-color);
+}
+
+/* Responsive para modal */
+@media (max-width: 768px) {
+    .empleado-modal-extended {
+        width: 98%;
+        margin: 1% auto;
+        max-height: 95vh;
+    }
+    
+    .empleado-tabs {
+        flex-wrap: wrap;
+        gap: 2px;
+    }
+    
+    .empleado-tabs .tab-btn {
+        padding: 8px 12px;
+        font-size: 0.85rem;
+        flex: 1;
+        min-width: 120px;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .form-actions .btn {
+        width: 100%;
+    }
+    
+    .tab-content h3 {
+        font-size: 1.1rem;
+    }
+    
+    .tab-content h4 {
+        font-size: 0.95rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .empleado-tabs .tab-btn {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+    
+    .empleado-tabs .tab-btn i {
+        margin-right: 4px;
+    }
+    
+    .form-control {
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Indicadores de progreso del formulario */
+.form-progress {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+.progress-step {
+    flex: 1;
+    height: 4px;
+    background: var(--border-color);
+    margin: 0 2px;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.progress-step.completed {
+    background: var(--success-color);
+}
+
+.progress-step.active {
+    background: var(--primary-color);
+}
+
+/* Campos con iconos */
+.form-group-with-icon {
+    position: relative;
+}
+
+.form-group-with-icon .form-control {
+    padding-left: 40px;
+}
+
+.form-group-with-icon .field-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--secondary-color);
+    z-index: 1;
+}
+
+/* Tooltips para ayuda */
+.form-tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 5px;
+    cursor: help;
+}
+
+.form-tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: var(--dark-color);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 8px;
+    position: absolute;
+    z-index: 1000;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    font-size: 0.8rem;
+}
+
+.form-tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

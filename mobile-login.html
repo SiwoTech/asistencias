@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>CWO TimeTrack - Sistema de Asistencias</title>
+    
+    <!-- Basic Meta Tags -->
+    <meta name="description" content="Sistema completo de control de asistencias y empleados para CWO TimeTrack">
+    <meta name="keywords" content="asistencias, empleados, control, horarios, timetrack">
+    <meta name="author" content="CWO TimeTrack">
+    
+   <!-- PWA Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Asistencias">
+    <meta name="application-name" content="Asistencias">
+    <meta name="theme-color" content="#007bff">
+    <meta name="msapplication-navbutton-color" content="#007bff">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#007bff">
+    
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Apple Touch Icons -->
+    <link rel="apple-touch-icon" href="assets/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="assets/icons/icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="96x96" href="assets/icons/icon-96x96.png">
+    <link rel="apple-touch-icon" sizes="128x128" href="assets/icons/icon-128x128.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="assets/icons/icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="assets/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" sizes="384x384" href="assets/icons/icon-384x384.png">
+    <link rel="apple-touch-icon" sizes="512x512" href="assets/icons/icon-512x512.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/icon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/icons/icon-16x16.png">
+    
+    <!-- Splash Screen iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-startup-image" href="assets/icons/icon-512x512.png">
+    
+    <!-- Windows Tiles -->
+    <meta name="msapplication-TileImage" content="assets/icons/icon-144x144.png">
+    <meta name="msapplication-square70x70logo" content="assets/icons/icon-72x72.png">
+    <meta name="msapplication-square150x150logo" content="assets/icons/icon-152x152.png">
+    <meta name="msapplication-wide310x150logo" content="assets/icons/icon-384x384.png">
+    <meta name="msapplication-square310x310logo" content="assets/icons/icon-512x512.png">
+    
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/mobile-auth.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="css/mobile-auth.css" as="style">
+    <link rel="preload" href="js/mobile-auth.js" as="script">
+    <link rel="preload" href="js/pwa-install.js" as="script">
+    
+    <!-- DNS Prefetch -->
+    <link rel="dns-prefetch" href="//cdnjs.cloudflare.com">
+    
+    <!-- Critical CSS for faster loading -->
+    <style>
+        /* Critical CSS inline para carga más rápida */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .mobile-container {
+            min-height: 100vh;
+            position: relative;
+            background: inherit;
+        }
+        
+        .loading-initial {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #e74c3c;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 9999;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255,255,255,0.3);
+            border-top: 4px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .pwa-install-fab {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #e74c3c;
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .pwa-install-fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(231, 76, 60, 0.6);
+        }
+        
+        .hidden { display: none !important; }
+        
+        .change-password-card {
+          max-width: 370px;
+          margin: 40px auto;
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 4px 24px rgba(231,76,60,0.09);
+          padding: 32px 24px 24px 24px;
+          text-align: center;
+          animation: fadeIn 0.5s;
+        }
+        .change-password-header i {
+          font-size: 2.3em;
+          color: #e74c3c;
+          margin-bottom: 8px;
+        }
+        .change-password-header h2 {
+          margin: 8px 0 4px 0;
+          color: #c0392b;
+        }
+        .password-req { font-size: 0.9em; color: #c0392b; margin-top: 2px; }
+        .btn-block { width: 100%; margin-top: 18px; }
+        @keyframes fadeIn { from {opacity:0;} to {opacity:1;} }
+        
+        .attendance-card {
+          max-width: 400px;
+          margin: 40px auto;
+          background: #fff;
+          border-radius: 16px;
+          box-shadow: 0 4px 24px rgba(39,174,96,0.09);
+          padding: 32px 24px 24px 24px;
+          text-align: center;
+          animation: fadeIn 0.5s;
+        }
+        .attendance-header i {
+          font-size: 2em;
+          color: #27ae60;
+          margin-bottom: 8px;
+        }
+        .attendance-actions .btn-block {
+          margin: 10px 0;
+          font-size: 1.1em;
+        }
+        .pulse {
+          animation: pulse 1s infinite alternate;
+        }
+        @keyframes pulse {
+          from { box-shadow: 0 0 0px rgba(39,174,96,0.15); }
+          to { box-shadow: 0 0 14px rgba(39,174,96,0.30); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Initial Loading Screen -->
+    <div id="initial-loading" class="loading-initial">
+        <div class="loading-spinner"></div>
+        <h2>CWO TimeTrack</h2>
+        <p>Cargando sistema...</p>
+    </div>
+
+    <!-- PWA Install Banner -->
+    <div id="install-banner" class="install-banner hidden">
+        <div class="install-content">
+            <div class="install-icon">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+            <div class="install-text">
+                <h4>¡Instala CWO TimeTrack!</h4>
+                <p>Agrega la aplicación a tu pantalla de inicio para acceso rápido y funciones offline</p>
+            </div>
+            <div class="install-actions">
+                <button id="install-btn" class="btn btn-primary btn-small">
+                    <i class="fas fa-download"></i> Instalar
+                </button>
+                <button id="install-dismiss" class="btn btn-secondary btn-small">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Install FAB (Floating Action Button) -->
+    <button id="pwa-install-fab" class="pwa-install-fab" title="Instalar aplicación">
+        <i class="fas fa-download"></i>
+    </button>
+
+    <!-- iOS Install Instructions Modal -->
+    <div id="ios-install-modal" class="modal hidden">
+        <div class="modal-content ios-install-content">
+            <span class="close" onclick="hideIOSInstructions()">&times;</span>
+            <div class="ios-install-header">
+                <i class="fas fa-mobile-alt"></i>
+                <h2>Instalar en iPhone/iPad</h2>
+                <p>Sigue estos pasos para instalar CWO TimeTrack</p>
+            </div>
+            
+            <div class="ios-instructions">
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-share"></i>
+                        </div>
+                        <div class="step-text">
+                            <h4>Abrir menú compartir</h4>
+                            <p>Toca el botón <strong>Compartir</strong> en la parte inferior de Safari</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-plus-square"></i>
+                        </div>
+                        <div class="step-text">
+                            <h4>Agregar a pantalla de inicio</h4>
+                            <p>Desplázate y toca <strong>"Agregar a pantalla de inicio"</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="step-text">
+                            <h4>Confirmar instalación</h4>
+                            <p>Toca <strong>"Agregar"</strong> para completar la instalación</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ios-install-benefits">
+                <h4><i class="fas fa-star"></i> Beneficios de instalar:</h4>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <i class="fas fa-zap"></i>
+                        <span>Acceso instantáneo</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-mobile-alt"></i>
+                        <span>Experiencia nativa</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-wifi"></i>
+                        <span>Funciona offline</span>
+                    </div>
+                    <div class="benefit-item">
+                        <i class="fas fa-bell"></i>
+                        <span>Notificaciones</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="ios-install-footer">
+                <button onclick="hideIOSInstructions()" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Android Install Instructions Modal -->
+    <div id="android-install-modal" class="modal hidden">
+        <div class="modal-content android-install-content">
+            <span class="close" onclick="hideAndroidInstructions()">&times;</span>
+            <div class="android-install-header">
+                <i class="fab fa-android"></i>
+                <h2>Instalar en Android</h2>
+                <p>Instala CWO TimeTrack en tu dispositivo Android</p>
+            </div>
+            
+            <div class="android-instructions">
+                <div class="instruction-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </div>
+                        <div class="step-text">
+                            <h4>Abrir menú de Chrome</h4>
+                            <p>Toca los <strong>tres puntos</strong> ⋮ en la esquina superior derecha</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-plus-circle"></i>
+                        </div>
+                        <div class="step-text">
+                            <h4>Instalar aplicación</h4>
+                            <p>Selecciona <strong>"Instalar aplicación"</strong> o <strong>"Agregar a pantalla de inicio"</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="instruction-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <div class="step-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="step-text">
+                            <h4>Confirmar instalación</h4>
+                            <p>Toca <strong>"Instalar"</strong> para agregar la app a tu dispositivo</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="android-install-footer">
+                <button onclick="hideAndroidInstructions()" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Entendido
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Available Notification -->
+    <div id="update-notification" class="update-notification hidden">
+        <div class="update-content">
+            <i class="fas fa-download"></i>
+            <div class="update-text">
+                <h4>Nueva versión disponible</h4>
+                <p>Hay una actualización lista para instalar</p>
+            </div>
+            <div class="update-actions">
+                <button id="update-btn" class="btn btn-primary btn-small">
+                    Actualizar
+                </button>
+                <button id="update-dismiss" class="btn btn-secondary btn-small">
+                    Después
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mobile-container">
+        <!-- Header -->
+        <div class="mobile-header">
+            <div class="logo">
+                <i class="fas fa-clock"></i>
+                <span>CWO TimeTrack</span>
+            </div>
+            <div class="header-actions">
+                <button id="install-header-btn" class="install-header-btn" title="Instalar App">
+                    <i class="fas fa-download"></i>
+                </button>
+                <div class="connection-status" id="connection-status">
+                    <i class="fas fa-wifi"></i>
+                </div>
+                <div class="current-time" id="current-time"></div>
+            </div>
+        </div>
+
+        <!-- Network Status Banner -->
+        <div id="offline-banner" class="offline-banner hidden">
+            <i class="fas fa-wifi-slash"></i>
+            <span>Sin conexión - Funcionalidad limitada</span>
+        </div>
+
+        <!-- Login Form -->
+        <div class="login-container" id="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="login-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h2>Iniciar Sesión</h2>
+                    <p>Ingresa tus credenciales para acceder al sistema</p>
+                </div>
+
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="usuario">
+                            <i class="fas fa-user"></i>
+                            Usuario
+                        </label>
+                        <input type="text" 
+                               id="usuario" 
+                               name="usuario" 
+                               class="form-control" 
+                               required 
+                               autocomplete="username"
+                               placeholder="Ingresa tu usuario"
+                               spellcheck="false">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">
+                            <i class="fas fa-lock"></i>
+                            Contraseña
+                        </label>
+                        <div class="password-input">
+                            <input type="password" 
+                                   id="password" 
+                                   name="password" 
+                                   class="form-control" 
+                                   required 
+                                   autocomplete="current-password"
+                                   placeholder="Ingresa tu contraseña">
+                            <button type="button" class="toggle-password" onclick="togglePassword()" tabindex="-1">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group form-options">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="recordar" name="recordar" checked>
+                            <span class="checkmark"></span>
+                            Recordar en este dispositivo
+                        </label>
+                        
+                        <div class="biometric-option" id="biometric-option" style="display: none;">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="biometric" name="biometric">
+                                <span class="checkmark"></span>
+                                <i class="fas fa-fingerprint"></i>
+                                Usar biométrico
+                            </label>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-login" id="login-btn">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span>Iniciar Sesión</span>
+                    </button>
+                </form>
+
+                <div class="login-help">
+                    <div class="help-links">
+                        <a href="#" onclick="showPasswordHelp()" class="help-link">
+                            <i class="fas fa-question-circle"></i>
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                        <a href="#" onclick="showSupportInfo()" class="help-link">
+                            <i class="fas fa-headset"></i>
+                            Soporte técnico
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CHANGE PASSWORD FORM (nuevo bloque agregado) -->
+        <div id="change-password-container" class="hidden">
+          <div class="change-password-card shadow">
+            <div class="change-password-header">
+              <i class="fas fa-key"></i>
+              <h2>Cambiar Contraseña</h2>
+              <p>Por seguridad, asigna una nueva contraseña.</p>
+            </div>
+            <form id="change-password-form">
+              <div class="form-group">
+                <label for="new-password"><i class="fas fa-lock"></i> Nueva contraseña</label>
+                <input type="password" id="new-password" name="new_password" class="form-control" required minlength="6" placeholder="Nueva contraseña">
+                <div id="req-length" class="password-req">Mínimo 6 caracteres</div>
+              </div>
+              <div class="form-group">
+                <label for="confirm-password"><i class="fas fa-lock"></i> Confirmar contraseña</label>
+                <input type="password" id="confirm-password" name="confirm_password" class="form-control" required minlength="6" placeholder="Confirmar contraseña">
+                <div id="req-match" class="password-req">Las contraseñas deben coincidir</div>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-save"></i> Guardar contraseña
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Attendance Container (dashboard, marcar entrada/salida, etc.) -->
+        <div id="attendance-container" class="hidden">
+          <div class="attendance-card shadow">
+            <div class="attendance-header">
+              <i class="fas fa-user-check"></i>
+              <div id="employee-name"></div>
+              <div id="employee-number"></div>
+            </div>
+            <div class="attendance-info">
+              <div id="attendance-date"></div>
+              <div id="attendance-time"></div>
+              <div id="current-status"></div>
+            </div>
+            <div class="attendance-actions">
+              <button class="btn btn-success btn-block pulse" onclick="pedirUbicacionYRegistrar()">
+                <i class="fas fa-map-marker-alt"></i> Registrar entrada
+              </button>
+            </div>
+            <div id="punch-status-mobile" class="punch-status-mobile"></div>
+            <div class="attendance-records">
+              <div>Entrada: <span id="record-entrada">--:--</span></div>
+              <div>Salida: <span id="record-salida">--:--</span></div>
+              <div>Estado: <span id="record-estado">Sin registro</span></div>
+            </div>
+          </div>
+        </div>
+
+        
+        
+        <!-- Version Info -->
+        <div class="version-info">
+            <p>CWO TimeTrack v1.0.0</p>
+            <p id="install-status">Web App</p>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading-mobile" class="loading-mobile hidden">
+            <div class="spinner"></div>
+            <p>Cargando...</p>
+        </div>
+
+        <!-- Notification -->
+        <div id="notification-mobile" class="notification-mobile"></div>
+    </div>
+    
+    <!-- Modal de solicitud por fuera de rango GPS -->
+    <div id="modal-autorizacion-gps" class="modal hidden" style="z-index:10000;">
+        <div class="modal-content" style="max-width:350px;margin:auto;background:#fff;border-radius:10px;padding:24px;">
+            <span class="close" onclick="cerrarModalAutorizacionGPS()" style="float:right;cursor:pointer;">&times;</span>
+            <h3 style="color:#e74c3c;">Fuera de rango GPS</h3>
+            <p>No te encuentras dentro del rango permitido para checar.<br>
+            Si deseas solicitar autorización, por favor escribe una justificación:</p>
+            <textarea id="justificacion-gps" rows="3" style="width:100%;margin:10px 0;padding:8px;border-radius:5px;border:1px solid #ddd;" placeholder="Escribe tu motivo aquí..."></textarea>
+            <button onclick="enviarAutorizacionGPS()" class="btn btn-primary" style="margin-top:10px;">
+                <i class="fas fa-paper-plane"></i> Solicitar autorización
+            </button>
+            <button onclick="cerrarModalAutorizacionGPS()" class="btn btn-secondary" style="margin-top:8px;">
+                Cancelar
+            </button>
+        </div>
+    </div>
+    <!-- Scripts -->
+    <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const initialLoading = document.getElementById('initial-loading');
+                if (initialLoading) {
+                    initialLoading.style.opacity = '0';
+                    setTimeout(() => initialLoading.remove(), 300);
+                }
+            }, 1000);
+        });
+        function updateNetworkStatus() {
+            const status = document.getElementById('connection-status');
+            const banner = document.getElementById('offline-banner');
+            if (navigator.onLine) {
+                status.innerHTML = '<i class="fas fa-wifi"></i>';
+                status.classList.remove('offline');
+                banner.classList.add('hidden');
+            } else {
+                status.innerHTML = '<i class="fas fa-wifi-slash"></i>';
+                status.classList.add('offline');
+                banner.classList.remove('hidden');
+            }
+        }
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        updateNetworkStatus();
+        function updateInstallStatus() {
+            const statusElement = document.getElementById('install-status');
+            const isInstalled = window.matchMedia('(display-mode: standalone)').matches || 
+                              window.navigator.standalone === true;
+            if (isInstalled) {
+                statusElement.textContent = 'App Instalada';
+                statusElement.style.color = '#27ae60';
+            }
+        }
+        updateInstallStatus();
+        function hideIOSInstructions() {
+            document.getElementById('ios-install-modal').classList.add('hidden');
+        }
+        function hideAndroidInstructions() {
+            document.getElementById('android-install-modal').classList.add('hidden');
+        }
+        function showPasswordHelp() {
+            alert('Para recuperar tu contraseña, contacta al administrador del sistema.');
+        }
+        function showSupportInfo() {
+            alert('Soporte técnico:\nEmail: jdelbarrio@siwo-net.com\nTeléfono: (998) 356-6161');
+        }
+        function togglePassword() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.querySelector('.toggle-password i');
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleButton.classList.remove('fa-eye');
+                toggleButton.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                toggleButton.classList.remove('fa-eye-slash');
+                toggleButton.classList.add('fa-eye');
+            }
+        }
+    </script>
+    <script src="js/mobile-auth.js"></script>
+    <script src="js/pwa-install.js"></script>
+    <script src="js/horarios-fix.js"></script>
+    <script src="js/fix-estadisticas-especifico.js"></script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js', { scope: '/asistencias/' })
+                .then(registration => {
+                    console.log('✅ Service Worker registrado exitosamente:', registration.scope);
+                    registration.addEventListener('updatefound', () => {
+                        const newWorker = registration.installing;
+                        newWorker.addEventListener('statechange', () => {
+                            if (newWorker.state === 'installed') {
+                                if (navigator.serviceWorker.controller) {
+                                    showUpdateNotification();
+                                }
+                            }
+                        });
+                    });
+                })
+                .catch(registrationError => {
+                    console.error('❌ Service Worker registration failed:', registrationError);
+                });
+            });
+        } else {
+            console.log('⚠️ Service Worker no soportado en este navegador');
+        }
+        function showUpdateNotification() {
+            const updateNotification = document.getElementById('update-notification');
+            updateNotification.classList.remove('hidden');
+            document.getElementById('update-btn').addEventListener('click', () => {
+                window.location.reload();
+            });
+            document.getElementById('update-dismiss').addEventListener('click', () => {
+                updateNotification.classList.add('hidden');
+            });
+        }
+    </script>
+    <script>
+      window.empleadoId = <?= json_encode($empleadoId) ?>;
+      console.log('[Debug] window.empleadoId:', window.empleadoId);
+    </script>
+    <script src="js/checar-entrada.js"></script>
+</body>
+</html>

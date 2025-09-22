@@ -1,0 +1,8 @@
+/* Guía de colores para los iconos */
+:root {
+    --cwo-orange: #e55b26;
+    --cwo-gold: #f39c12;
+    --cwo-gradient: linear-gradient(135deg, #e55b26 0%, #f39c12 100%);
+    --cwo-dark: #c0392b;
+    --icon-padding: 15%;
+}

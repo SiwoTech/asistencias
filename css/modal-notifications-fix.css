@@ -1,0 +1,77 @@
+/* Arreglar z-index para notificaciones sobre modales */
+.notification,
+.alert,
+.toast,
+.message {
+    z-index: 10000 !important; /* Más alto que cualquier modal */
+    position: fixed !important;
+    top: 20px !important;
+    right: 20px !important;
+    background: white !important;
+    border: 2px solid #28a745 !important;
+    border-radius: 8px !important;
+    padding: 15px 20px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3) !important;
+    font-weight: bold !important;
+    max-width: 400px !important;
+    word-wrap: break-word !important;
+}
+
+.notification.error,
+.alert.error {
+    border-color: #dc3545 !important;
+    background: #f8d7da !important;
+    color: #721c24 !important;
+}
+
+.notification.success,
+.alert.success {
+    border-color: #28a745 !important;
+    background: #d4edda !important;
+    color: #155724 !important;
+}
+
+.notification.warning,
+.alert.warning {
+    border-color: #ffc107 !important;
+    background: #fff3cd !important;
+    color: #856404 !important;
+}
+
+/* Asegurar que los modales no bloqueen las notificaciones */
+.modal {
+    z-index: 9000 !important;
+}
+
+.modal-content {
+    z-index: 9001 !important;
+}
+
+/* Overlay del modal con z-index correcto */
+.modal-overlay {
+    z-index: 8999 !important;
+}
+
+/* Arreglar alerts de JavaScript para que se vean */
+.js-alert-overlay {
+    z-index: 10001 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: rgba(0,0,0,0.5) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.js-alert-box {
+    background: white !important;
+    padding: 20px !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
+    max-width: 400px !important;
+    margin: 20px !important;
+    z-index: 10002 !important;
+}

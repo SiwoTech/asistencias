@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Generador Iconos Cleanwork Orange</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .logo-upload {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 2px dashed #e55b26;
+            text-align: center;
+        }
+        .icon-container {
+            display: inline-block;
+            margin: 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+        .icon {
+            border-radius: 15%;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .icon:hover {
+            transform: scale(1.05);
+        }
+        .download-all {
+            background: #e55b26;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 20px 10px;
+        }
+        .download-all:hover {
+            background: #c73e1d;
+        }
+        .instructions {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e55b26;
+        }
+        .preview-original {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: inline-block;
+        }
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .control-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+        input[type="range"] {
+            width: 200px;
+            margin-right: 10px;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+        }
+        .color-option {
+            display: inline-block;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: inline-block;
+            border: 3px solid transparent;
+            margin-right: 10px;
+        }
+        .color-option.selected .color-preview {
+            border-color: #333;
+        }
+        .status {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="instructions">
+        <h2>🎨 Generador de Iconos PWA - Cleanwork Orange</h2>
+        <p><strong>Paso a paso:</strong></p>
+        <ol>
+            <li><strong>Sube tu logo</strong> usando el botón de abajo</li>
+            <li><strong>Ajusta la configuración</strong> (opcional)</li>
+            <li><strong>Haz clic en "Generar Iconos"</strong></li>
+            <li><strong>Descarga todos</strong> automáticamente</li>
+            <li><strong>Súbelos</strong> a tu carpeta <code>assets/icons/</code></li>
+        </ol>
+    </div>
+
+    <!-- Upload del logo -->
+    <div class="logo-upload">
+        <h3>📁 Subir tu Logo</h3>
+        <input type="file" id="logo-file" accept="image/*" />
+        <p style="margin-top: 10px; color: #666;">
+            Sube tu imagen del logo de Cleanwork Orange (PNG, JPG, SVG recomendado)
+        </p>
+        <div id="original-preview" class="preview-original" style="display: none;">
+            <h4>Vista previa del logo original:</h4>
+            <img id="original-img" style="max-width: 200px; max-height: 100px;" />
+        </div>
+    </div>
+
+    <!-- Controles de personalización -->
+    <div class="controls">
+        <h3>⚙️ Configuración de Iconos</h3>
+        
+        <div class="control-group">
+            <label>Fondo del icono:</label>
+            <div class="color-options">
+                <div class="color-option selected" data-bg="transparent">
+                    <div class="color-preview" style="background: linear-gradient(45deg, #f0f0f0 25%, transparent 25%), linear-gradient(-45deg, #f0f0f0 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #f0f0f0 75%), linear-gradient(-45deg, transparent 75%, #f0f0f0 75%); background-size: 10px 10px; background-position: 0 0, 0 5px, 5px -5px, -5px 0px;"></div>
+                    <span>Transparente</span>
+                </div>
+                <div class="color-option" data-bg="white">
+                    <div class="color-preview" style="background: white;"></div>
+                    <span>Blanco</span>
+                </div>
+                <div class="color-option" data-bg="orange">
+                    <div class="color-preview" style="background: linear-gradient(135deg, #e55b26 0%, #ff7f50 100%);"></div>
+                    <span>Naranja</span>
+                </div>
+                <div class="color-option" data-bg="dark">
+                    <div class="color-preview" style="background: #2c3e50;"></div>
+                    <span>Oscuro</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="control-group">
+            <label>Padding del logo: <span id="padding-value">10%</span></label>
+            <input type="range" id="padding-slider" min="5" max="25" value="10" />
+        </div>
+        
+        <div class="control-group">
+            <label>Esquinas redondeadas: <span id="radius-value">15%</span></label>
+            <input type="range" id="radius-slider" min="0" max="25" value="15" />
+        </div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <button class="download-all" id="generate-btn" onclick="generateAllIcons()" disabled>
+        🎨 Generar Iconos PWA
+    </button>
+    
+    <button class="download-all" id="download-btn" onclick="downloadAllIcons()" disabled>
+        📦 Descargar Todos
+    </button>
+
+    <button class="download-all" onclick="downloadZip()" id="zip-btn" disabled>
+        🗜️ Descargar ZIP
+    </button>
+
+    <div id="icons-container" style="margin-top: 20px;">
+        <!-- Los iconos se generarán aquí -->
+    </div>
+
+    <script>
+        // Variables globales
+        let originalImage = null;
+        let generatedIcons = [];
+        const iconSizes = [32, 72, 96, 128, 144, 152, 180, 192, 384, 512];
+        
+        // Configuración actual
+        let config = {
+            background: 'transparent',
+            padding: 10,
+            borderRadius: 15
+        };
+
+        // Event listeners
+        document.getElementById('logo-file').addEventListener('change', handleFileUpload);
+        document.getElementById('padding-slider').addEventListener('input', updatePadding);
+        document.getElementById('radius-slider').addEventListener('input', updateRadius);
+        
+        // Color options
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', selectBackground);
+        });
+
+        // Manejar subida de archivo
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                originalImage = new Image();
+                originalImage.onload = function() {
+                    // Mostrar preview
+                    document.getElementById('original-img').src = e.target.result;
+                    document.getElementById('original-preview').style.display = 'block';
+                    
+                    // Habilitar botón de generar
+                    document.getElementById('generate-btn').disabled = false;
+                    
+                    showStatus('✅ Logo cargado correctamente. ¡Ya puedes generar los iconos!', 'success');
+                };
+                originalImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Actualizar padding
+        function updatePadding(event) {
+            config.padding = parseInt(event.target.value);
+            document.getElementById('padding-value').textContent = config.padding + '%';
+        }
+
+        // Actualizar border radius
+        function updateRadius(event) {
+            config.borderRadius = parseInt(event.target.value);
+            document.getElementById('radius-value').textContent = config.borderRadius + '%';
+        }
+
+        // Seleccionar fondo
+        function selectBackground(event) {
+            document.querySelectorAll('.color-option').forEach(opt => opt.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            config.background = event.currentTarget.dataset.bg;
+        }
+
+        // Generar icono individual
+        function generateIcon(size) {
+            return new Promise((resolve) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                // Configurar fondo
+                const radius = (size * config.borderRadius) / 100;
+                
+                // Crear forma redondeada
+                ctx.beginPath();
+                ctx.roundRect(0, 0, size, size, radius);
+                ctx.clip();
+
+                // Aplicar fondo según configuración
+                switch(config.background) {
+                    case 'white':
+                        ctx.fillStyle = 'white';
+                        ctx.fillRect(0, 0, size, size);
+                        break;
+                    case 'orange':
+                        const gradient = ctx.createLinearGradient(0, 0, size, size);
+                        gradient.addColorStop(0, '#e55b26');
+                        gradient.addColorStop(1, '#ff7f50');
+                        ctx.fillStyle = gradient;
+                        ctx.fillRect(0, 0, size, size);
+                        break;
+                    case 'dark':
+                        ctx.fillStyle = '#2c3e50';
+                        ctx.fillRect(0, 0, size, size);
+                        break;
+                    case 'transparent':
+                    default:
+                        // Sin fondo
+                        break;
+                }
+
+                // Calcular posición del logo
+                const padding = (size * config.padding) / 100;
+                const logoSize = size - (padding * 2);
+
+                // Dibujar logo centrado
+                ctx.drawImage(originalImage, padding, padding, logoSize, logoSize);
+
+                // Convertir a blob
+                canvas.toBlob(resolve, 'image/png');
+            });
+        }
+
+        // Generar todos los iconos
+        async function generateAllIcons() {
+            if (!originalImage) {
+                showStatus('❌ Por favor sube primero tu logo', 'error');
+                return;
+            }
+
+            showStatus('🎨 Generando iconos...', 'info');
+            
+            const container = document.getElementById('icons-container');
+            container.innerHTML = '<h3>Iconos Generados:</h3>';
+            
+            generatedIcons = [];
+
+            for (let i = 0; i < iconSizes.length; i++) {
+                const size = iconSizes[i];
+                
+                try {
+                    const blob = await generateIcon(size);
+                    
+                    // Crear preview
+                    const iconDiv = document.createElement('div');
+                    iconDiv.className = 'icon-container';
+                    
+                    const img = document.createElement('img');
+                    img.className = 'icon';
+                    img.src = URL.createObjectURL(blob);
+                    img.style.width = '80px';
+                    img.style.height = '80px';
+                    img.title = `Clic para descargar icon-${size}x${size}.png`;
+                    
+                    // Click para descargar individual
+                    img.onclick = () => downloadIcon(blob, `icon-${size}x${size}.png`);
+                    
+                    const label = document.createElement('div');
+                    label.textContent = `${size}x${size}`;
+                    label.style.fontSize = '12px';
+                    label.style.fontWeight = 'bold';
+                    label.style.color = '#666';
+                    
+                    iconDiv.appendChild(img);
+                    iconDiv.appendChild(label);
+                    container.appendChild(iconDiv);
+                    
+                    // Guardar para descarga masiva
+                    generatedIcons.push({
+                        size: size,
+                        blob: blob,
+                        filename: `icon-${size}x${size}.png`
+                    });
+                    
+                } catch (error) {
+                    console.error(`Error generando icono ${size}x${size}:`, error);
+                }
+            }
+
+            // Habilitar botones de descarga
+            document.getElementById('download-btn').disabled = false;
+            document.getElementById('zip-btn').disabled = false;
+            
+            showStatus('✅ ¡Todos los iconos generados correctamente!', 'success');
+        }
+
+        // Descargar icono individual
+        function downloadIcon(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Descargar todos los iconos
+        function downloadAllIcons() {
+            if (generatedIcons.length === 0) {
+                showStatus('❌ Primero debes generar los iconos', 'error');
+                return;
+            }
+
+            showStatus('📦 Descargando todos los iconos...', 'info');
+            
+            generatedIcons.forEach((icon, index) => {
+                setTimeout(() => {
+                    downloadIcon(icon.blob, icon.filename);
+                }, index * 300); // Delay entre descargas
+            });
+
+            setTimeout(() => {
+                showStatus('✅ ¡Todos los iconos descargados!', 'success');
+            }, generatedIcons.length * 300 + 1000);
+        }
+
+        // Descargar como ZIP
+        function downloadZip() {
+            if (generatedIcons.length === 0) {
+                showStatus('❌ Primero debes generar los iconos', 'error');
+                return;
+            }
+
+            // Cargar JSZip si no está disponible
+            if (typeof JSZip === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+                script.onload = () => createZip();
+                document.head.appendChild(script);
+            } else {
+                createZip();
+            }
+        }
+
+        // Crear archivo ZIP
+        async function createZip() {
+            showStatus('🗜️ Creando archivo ZIP...', 'info');
+            
+            const zip = new JSZip();
+            const iconsFolder = zip.folder('icons');
+
+            for (const icon of generatedIcons) {
+                iconsFolder.file(icon.filename, icon.blob);
+            }
+
+            try {
+                const content = await zip.generateAsync({ type: 'blob' });
+                downloadIcon(content, 'cleanwork-pwa-icons.zip');
+                showStatus('✅ ¡Archivo ZIP descargado!', 'success');
+            } catch (error) {
+                showStatus('❌ Error creando ZIP: ' + error.message, 'error');
+            }
+        }
+
+        // Mostrar estado
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.style.display = 'block';
+            
+            // Colores según tipo
+            switch(type) {
+                case 'success':
+                    status.style.background = '#d4edda';
+                    status.style.color = '#155724';
+                    break;
+                case 'error':
+                    status.style.background = '#f8d7da';
+                    status.style.color = '#721c24';
+                    break;
+                case 'info':
+                    status.style.background = '#d1ecf1';
+                    status.style.color = '#0c5460';
+                    break;
+            }
+
+            // Auto-ocultar después de 5 segundos
+            setTimeout(() => {
+                status.style.display = 'none';
+            }, 5000);
+        }
+
+        // Polyfill para roundRect si no está disponible
+        if (!CanvasRenderingContext2D.prototype.roundRect) {
+            CanvasRenderingContext2D.prototype.roundRect = function(x, y, width, height, radius) {
+                this.beginPath();
+                this.moveTo(x + radius, y);
+                this.lineTo(x + width - radius, y);
+                this.quadraticCurveTo(x + width, y, x + width, y + radius);
+                this.lineTo(x + width, y + height - radius);
+                this.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+                this.lineTo(x + radius, y + height);
+                this.quadraticCurveTo(x, y + height, x, y + height - radius);
+                this.lineTo(x, y + radius);
+                this.quadraticCurveTo(x, y, x + radius, y);
+                this.closePath();
+                return this;
+            };
+        }
+    </script>
+</body>
+</html>

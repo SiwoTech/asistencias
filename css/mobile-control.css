@@ -1,0 +1,64 @@
+/* Estilos para botones de control móvil */
+.btn-mobile-toggle {
+    transition: all 0.3s ease;
+}
+
+.btn-mobile-toggle:hover {
+    transform: scale(1.1);
+}
+
+.btn-mobile-toggle.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-mobile-toggle.btn-success:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.btn-mobile-toggle.btn-secondary {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.btn-mobile-toggle.btn-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+}
+
+/* Efecto de pulse para botones móviles */
+@keyframes mobile-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.btn-mobile-toggle.updating {
+    animation: mobile-pulse 0.6s ease-in-out;
+}
+
+/* Tooltip personalizado para botones móviles */
+.btn-mobile-toggle[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 1000;
+    margin-bottom: 5px;
+}
+
+/* Responsivo para móviles */
+@media (max-width: 768px) {
+    .btn-group .btn-mobile-toggle {
+        margin-top: 2px;
+        width: 100%;
+    }
+}
