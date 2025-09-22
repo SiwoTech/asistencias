@@ -141,7 +141,7 @@ class MobileAuth {
             }
         } catch (error) {
             console.error('Error logging in:', error);
-            this.showNotification('Error de conexión: ' + error.message, 'error');
+            this.showNotification('Error Usuario o Contraseña Incorrecto: ' + error.message, 'error');
             throw error;
         }
     }

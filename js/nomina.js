@@ -286,3 +286,12 @@ class NominaModule {
 document.addEventListener('DOMContentLoaded', () => {
     window.nominaModule = new NominaModule();
 });
+
+// Exponer la función globalmente
+window.generarNominaPeriodo = () => {
+    if (window.nominaModule) {
+        window.nominaModule.generarNominaPeriodo();
+    } else {
+        console.error("El módulo NominaModule no está inicializado.");
+    }
+};

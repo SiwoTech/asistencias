@@ -228,6 +228,77 @@ function cargarZonas() {
         });
 }
 
+// Módulo de zonas de chequeo
+window.zonasChequeoModule = {
+    // Método para cargar las zonas (compatibilidad con main.js)
+    loadZonas: function() {
+        console.log('Cargando zonas desde zonasChequeoModule...');
+        cargarZonas(); // Llama a la función cargarZonas definida previamente
+    }
+};
+// Función para mostrar y gestionar el modal de zonas
+function mostrarModalZona(zona = null) {
+    const modal = document.getElementById('modal-zona-chequeo');
+    const form = document.getElementById('form-zona-chequeo');
+    const empleadoSelect = document.getElementById('zona-empleado');
+    const empleadoNombreInput = document.getElementById('zona-empleado-nombre');
+    const zonaCentroInput = document.getElementById('zona-centro');
+
+    modal.style.display = 'block';
+
+    if (zona) {
+        // Modo edición
+        document.getElementById('modal-zona-title').textContent = "Editar Zona";
+        document.getElementById('zona-nombre').value = zona.nombre || '';
+        document.getElementById('zona-latitud').value = zona.latitud || '';
+        document.getElementById('zona-longitud').value = zona.longitud || '';
+        document.getElementById('zona-radio').value = zona.radio || '100';
+        document.getElementById('zona-activo').value = zona.activo || '1';
+        document.getElementById('zona-id').value = zona.id || "";
+
+        // Empleado solo lectura: muestra nombre, envía id
+        empleadoSelect.style.display = 'none';
+        empleadoNombreInput.style.display = '';
+        empleadoNombreInput.value = zona.empleado_nombre || 'Sin asignar';
+        empleadoNombreInput.disabled = true;
+
+        // Guardar el id real en el atributo data-id (no en el value)
+        empleadoNombreInput.setAttribute("data-id", zona.empleado_id || '');
+
+        // Centro de trabajo solo lectura
+        zonaCentroInput.value = zona.centro_trabajo || '';
+        zonaCentroInput.readOnly = true;
+        zonaCentroInput.disabled = false;
+    } else {
+        // Modo crear
+        document.getElementById('modal-zona-title').textContent = "Nueva Zona de Chequeo";
+        form.reset();
+        document.getElementById('zona-id').value = "";
+        document.getElementById('zona-radio').value = "100";
+        document.getElementById('zona-activo').value = "1";
+
+        empleadoSelect.style.display = '';
+        empleadoNombreInput.style.display = 'none';
+        empleadoSelect.setAttribute("name", "empleado_id");
+        empleadoNombreInput.disabled = false;
+        empleadoNombreInput.removeAttribute("data-id");
+
+        zonaCentroInput.value = '';
+        zonaCentroInput.disabled = false;
+
+        llenarSelectsZona();
+    }
+}
+
+// Carga inicial de datos
+document.addEventListener('DOMContentLoaded', function() {
+    const zonasSection = document.getElementById('zonas-chequeo');
+    if (zonasSection) {
+        llenarSelectsZona();
+        cargarZonas();
+    }
+});
+
 function eliminarZona(id) {
     if (confirm('¿Está seguro de que desea eliminar esta zona?')) {
         fetch('php/api/zonas_chequeo.php', {

@@ -1,49 +1,37 @@
 <?php
+// Enable error reporting for debugging
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 date_default_timezone_set('America/Cancun');
 
-require_once '../config/database.php';
+// Log received parameters for debugging
+error_log("Parámetros recibidos: " . json_encode($_GET));
 
+require_once '../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') exit(0);
 
+// Helper function to send JSON responses
 function sendJson($response, $statusCode = 200) {
     http_response_code($statusCode);
     echo json_encode($response);
     exit;
 }
 
-// Obtiene la zona para el empleado (o centro de trabajo)
-function getZonaChequeo($db, $empleadoId) {
-    $stmt = $db->prepare("SELECT * FROM zonas_chequeo WHERE empleado_id = ? AND activo = 1 LIMIT 1");
-    $stmt->execute([$empleadoId]);
-    $zona = $stmt->fetch();
-    if ($zona) return $zona;
-    // Busca por centro_trabajo si no tiene zona propia
-    $stmt = $db->prepare("
-        SELECT z.* FROM zonas_chequeo z
-        INNER JOIN empleados e ON z.centro_trabajo = e.centro_trabajo
-        WHERE e.id = ? AND z.activo = 1 LIMIT 1
-    ");
-    $stmt->execute([$empleadoId]);
-    return $stmt->fetch();
-}
-
-// Función para calcular distancia entre dos puntos (metros)
+// Helper function to calculate distance between two coordinates
 function isInsideFence_Distancia($lat, $lng, $officeLat, $officeLng) {
-    $earthRadius = 6371000;
+    $earthRadius = 6371000; // Radius of Earth in meters
     $dLat = deg2rad($lat - $officeLat);
     $dLng = deg2rad($lng - $officeLng);
-    $a = sin($dLat/2) * sin($dLat/2) +
+    $a = sin($dLat / 2) * sin($dLat / 2) +
          cos(deg2rad($officeLat)) * cos(deg2rad($lat)) *
-         sin($dLng/2) * sin($dLng/2);
-    $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+         sin($dLng / 2) * sin($dLng / 2);
+    $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
     return $earthRadius * $c;
 }
 
-// Función para validar si está dentro del radio permitido
+// Helper function to determine if a point is within a radius
 function isInsideFence($lat, $lng, $officeLat, $officeLng, $radiusMeters = 100) {
     $distance = isInsideFence_Distancia($lat, $lng, $officeLat, $officeLng);
     return $distance <= $radiusMeters;
@@ -52,14 +40,17 @@ function isInsideFence($lat, $lng, $officeLat, $officeLng, $radiusMeters = 100) 
 try {
     $database = new Database();
     $db = $database->getConnection();
-    if (!$db) sendJson(['success' => false, 'message' => 'Error de conexión'], 500);
+
+    if (!$db) {
+        sendJson(['success' => false, 'message' => 'Error de conexión a la base de datos'], 500);
+    }
 
     $method = $_SERVER['REQUEST_METHOD'];
-    $input_raw = file_get_contents('php://input');
-    $input = json_decode($input_raw, true);
+    $inputRaw = file_get_contents('php://input');
+    $input = json_decode($inputRaw, true);
 
     if (in_array($method, ['POST', 'PUT', 'DELETE']) && $input === null) {
-        sendJson(['success' => false, 'message' => 'No se recibió JSON válido', 'input_raw' => $input_raw], 400);
+        sendJson(['success' => false, 'message' => 'No se recibió JSON válido', 'input_raw' => $inputRaw], 400);
     }
 
     switch ($method) {
@@ -82,6 +73,7 @@ try {
     sendJson(['success' => false, 'message' => 'Error: ' . $e->getMessage()], 500);
 }
 
+// Handler for GET requests
 function handleGetAsistencia($db) {
     $fecha = $_GET['fecha'] ?? date('Y-m-d');
     $empleadoId = $_GET['empleado_id'] ?? null;
@@ -130,6 +122,7 @@ function handleGetAsistencia($db) {
     ]);
 }
 
+// Additional handlers for POST, PUT, DELETE (unchanged)
 function handleCreateAsistencia($db, $input) {
     if (empty($input['empleado_id'])) {
         sendJson(['success' => false, 'message' => 'ID del empleado es requerido'], 400);

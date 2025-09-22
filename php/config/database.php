@@ -1,6 +1,6 @@
 <?php
 class Database {
-    private $host = '31.170.167.52';
+    private $host = 'localhost';
     private $db_name = 'u826340212_asistencia'; // Base de datos actualizada
     private $username = 'u826340212_asistencia'; // Cambiar por tu usuario de cPanel/hosting
     private $password = 'Cwo9982061148.';     // Cambiar por tu contraseña de cPanel/hosting

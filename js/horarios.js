@@ -4,7 +4,7 @@ console.log('🔍 document.readyState:', document.readyState);
 console.log('🔍 window.sistemaAsistencia existe:', !!window.sistemaAsistencia);
 class HorariosModule {
     constructor() {
-        this.baseURL = 'http://localhost/asistencias/php/api';
+        this.baseURL = 'http://siwo-net.com/asistencias/php/api';
         this.horarios = [];
         this.empleados = [];
         this.currentView = 'empleado';
@@ -18,7 +18,7 @@ class HorariosModule {
     
     try {
         console.log('📡 Iniciando carga de datos...');
-        await this.loadHorariosData();
+        await this.loadHorarios();
         console.log('✅ Datos cargados exitosamente');
     } catch (error) {
         console.error('❌ Error en init:', error);
@@ -578,6 +578,62 @@ function initializeHorariosModule() {
         console.error('❌ Error al inicializar HorariosModule:', error);
     }
 }
+// Exponer funciones globales
+window.mostrarModalHorario = (empleadoId = null) => {
+    if (window.horariosModule) {
+        window.horariosModule.mostrarModalHorario(empleadoId);
+    } else {
+        console.error("El módulo HorariosModule no está inicializado.");
+    }
+};
+
+window.cerrarModalHorario = () => {
+    if (window.horariosModule) {
+        window.horariosModule.cerrarModalHorario();
+    } else {
+        console.error("El módulo HorariosModule no está inicializado.");
+    }
+};
+
+window.guardarHorarios = () => {
+    if (window.horariosModule) {
+        window.horariosModule.guardarHorarios();
+    } else {
+        console.error("El módulo HorariosModule no está inicializado.");
+    }
+};
+
+window.filtrarHorarios = () => {
+    if (window.horariosModule) {
+        window.horariosModule.filtrarHorarios();
+    } else {
+        console.error("El módulo HorariosModule no está inicializado.");
+    }
+};
+
+window.cambiarVista = (vista) => {
+    if (window.horariosModule) {
+        window.horariosModule.changeView(vista);
+    } else {
+        console.error("El módulo HorariosModule no está inicializado.");
+    }
+};
+
+window.editarHorarioEmpleado = (empleadoId) => {
+    if (window.horariosModule) {
+        window.horariosModule.editarHorarioEmpleado(empleadoId);
+    } else {
+        console.error("El módulo HorariosModule no está inicializado.");
+    }
+};
+
+window.eliminarHorarioEmpleado = (empleadoId) => {
+    if (window.horariosModule) {
+        window.horariosModule.eliminarHorarioEmpleado(empleadoId);
+    } else {
+        console.error("El módulo HorariosModule no está inicializado.");
+    }
+};
 
 // Inicializar cuando el DOM esté listo
 if (document.readyState === 'loading') {
